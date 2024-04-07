@@ -1,8 +1,8 @@
 node_modules
 
-/.cache
+app/.cache
 /build
-/public/build
+app/public/build
 .env
 
 # Local .terraform directories
