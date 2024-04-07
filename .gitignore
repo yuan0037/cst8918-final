@@ -1,7 +1,7 @@
 node_modules
 
 app/.cache
-/build
+app/build
 app/public/build
 .env
 
