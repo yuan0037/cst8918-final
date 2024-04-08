@@ -5,7 +5,7 @@ on:
 
 defaults:
     run:
-        working-directory: infra/tf-app  
+        working-directory: infra/tf-backend  
 jobs:
   terraform:
     runs-on: ubuntu-latest
