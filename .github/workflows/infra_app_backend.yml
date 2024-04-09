@@ -35,30 +35,39 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
-    - name: Set Resource Group Name Secret
-      run: echo "${{ steps.terraform_outputs.outputs.resource_group_name }}" >> $GITHUB_ENV
+    # - name: Set Resource Group Name Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.resource_group_name }}" >> $GITHUB_ENV
 
-    - name: Set Storage Account Name Secret
-      run: echo "${{ steps.terraform_outputs.outputs.storage_account_name }}" >> $GITHUB_ENV
+    # - name: Set Storage Account Name Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.storage_account_name }}" >> $GITHUB_ENV
 
-    - name: Set Container Name Secret
-      run: echo "${{ steps.terraform_outputs.outputs.container_name }}" >> $GITHUB_ENV
+    # - name: Set Container Name Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.container_name }}" >> $GITHUB_ENV
 
-    - name: Set Primary Access Key Secret
-      run: echo "${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
+    # - name: Set Primary Access Key Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
       
-    - name: Set ACR Login Server Secret
-      run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
+    # - name: Set ACR Login Server Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
 
-    - name: Set ACR Username Secret
-      run: echo "${{ steps.terraform_outputs.outputs.acr_username }}" >> $GITHUB_ENV
+    # - name: Set ACR Username Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.acr_username }}" >> $GITHUB_ENV
 
-    - name: Set ACR Password Secret
-      run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
+    # - name: Set ACR Password Secret
+    #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
-    - name: Export ARM_ACCESS_KEY
-      run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
+    # - name: Export ARM_ACCESS_KEY
+    #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
+    - name: Get ARM_ACCESS_KEY
+      id: arm_access_key
+      run: echo "::set-output name=arm_access_key::$(terraform output -raw primary_access_key)"
+      
+    - name: Set ARM_ACCESS_KEY secret
+      run: echo "$ARM_ACCESS_KEY" > /dev/null # Mask the output to prevent it from being printed to the logs
+      env:
+        ARM_ACCESS_KEY: ${{ steps.arm_access_key.outputs.arm_access_key }}
+      shell: bash
     # - name: Upload Secrets
     #   uses: actions/upload-artifact@v2
     #   with:
