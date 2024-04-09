@@ -14,7 +14,6 @@ env:
     ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
     ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
     ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-    ARM_ACCESS_KEY: "${{ secrets.ARM_ACCESS_KEY }}"
 
 defaults:
     run:
@@ -47,7 +46,7 @@ jobs:
 
     - name: Set Primary Access Key Secret
       run: echo "${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
-
+      
     - name: Set ACR Login Server Secret
       run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
 
@@ -57,8 +56,11 @@ jobs:
     - name: Set ACR Password Secret
       run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
-    - name: Upload Secrets
-      uses: actions/upload-artifact@v2
-      with:
-        name: terraform-outputs
-        path: terraform-outputs.txt
+    - name: Export ARM_ACCESS_KEY
+      run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
+        
+    # - name: Upload Secrets
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: terraform-outputs
+    #     path: terraform-outputs.txt
