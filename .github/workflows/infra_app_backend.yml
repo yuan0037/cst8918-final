@@ -67,6 +67,16 @@ jobs:
       run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
 
+    - name: Set output
+      id: vars
+      run: |
+        echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
+    
+    - name: Use output
+      run: |
+        echo "Primary Access Key: ${{ steps.vars.outputs.primary_access_key }}"
+    
+
     - name: Update ARM_ACCESS_KEY secret
       run: |        
         SECRET_VALUE=$(echo -n "TEST331" | base64)
