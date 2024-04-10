@@ -48,8 +48,8 @@ jobs:
     - id: terraform_outputs_1
       run: echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
 
-    - name: Set Primary Access Key Secret
-      run: echo "${{ steps.terraform_outputs_1.outputs.primary_access_key }}" >> $GITHUB_ENV
+    # - name: Set Primary Access Key Secret
+    #   run: echo "${{ steps.terraform_outputs_1.outputs.primary_access_key }}" >> $GITHUB_ENV
       
     # - name: Set ACR Login Server Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
@@ -57,8 +57,8 @@ jobs:
     - id: terraform_outputs_2
       run: echo "::set-output name=acr_username::$(terraform output -raw acr_username)"
 
-    - name: Set ACR Username Secret
-      run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
+    # - name: Set ACR Username Secret
+    #   run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
 
     # - name: Set ACR Password Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
