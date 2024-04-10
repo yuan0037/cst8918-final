@@ -72,8 +72,8 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/secrets/ARM_ACCESS_KEY" \
-            -d "{\"encrypted_value\":\"$(echo -n $ARM_ACCESS_KEY | base64)\"}"
+            "https://api.github.com/repos/yuan0037/cst8918-final/actions/secrets/ARM_ACCESS_KEY" \
+            -d "{\"encrypted_value\":\"$(echo -n $ARM_ACCESS_KEY)\"}"
             
     # - name: Upload Secrets
     #   uses: actions/upload-artifact@v2
