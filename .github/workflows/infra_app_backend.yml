@@ -59,15 +59,19 @@ jobs:
     # - name: Export ARM_ACCESS_KEY
     #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
-    - name: Get ARM_ACCESS_KEY
-      id: arm_access_key
-      run: echo "::set-output name=arm_access_key::$(terraform output -raw primary_access_key)"
-      
-    - name: Set ARM_ACCESS_KEY secret
-      run: echo "$ARM_ACCESS_KEY" > /dev/null # Mask the output to prevent it from being printed to the logs
-      env:
-        ARM_ACCESS_KEY: ${{ steps.arm_access_key.outputs.arm_access_key }}
-      shell: bash
+
+    - name: Set ARM_ACCESS_KEY value
+      run: echo "ARM_ACCESS_KEY=${{ steps.arm_access_key.outputs.primary_access_key }}" >> $GITHUB_ENV
+
+    - name: Update ARM_ACCESS_KEY secret
+      run: |
+        echo "::set-env name=ARM_ACCESS_KEY::$ARM_ACCESS_KEY"
+        curl -X PUT \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/secrets/ARM_ACCESS_KEY" \
+          -d "{\"encrypted_value\":\"$(echo -n $ARM_ACCESS_KEY | base64)\"}"
+            
     # - name: Upload Secrets
     #   uses: actions/upload-artifact@v2
     #   with:
