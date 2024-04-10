@@ -17,7 +17,7 @@ output "container_name" {
 output "primary_access_key" {
   description = "primary access key for storage account"
   value       = azurerm_storage_account.backendstate.primary_access_key
-  sensitive   = true
+  # sensitive   = true
 }
 
 output "acr_login_server" {
