@@ -51,8 +51,8 @@ jobs:
     # - name: Set ACR Login Server Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
 
-    # - name: Set ACR Username Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.acr_username }}" >> $GITHUB_ENV
+    - name: Set ACR Username Secret
+      run: echo "${{ steps.terraform_outputs.outputs.acr_username }}" >> $GITHUB_ENV
 
     # - name: Set ACR Password Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
@@ -67,7 +67,9 @@ jobs:
     #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
     - name: Save Terraform Output to Env Var
-      run: echo "Primary Access Key is ${{ env.primary_access_key }}"
+      run: |
+        echo "Primary Access Key is a${{ env.primary_access_key }}b"
+        echo "Username is a${{ env.acr_username }}b"
         # echo "${{ steps.terraform_outputs.outputs.primary_access_key }}"
         # echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
 
