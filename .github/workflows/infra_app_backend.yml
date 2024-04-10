@@ -65,10 +65,9 @@ jobs:
         
 
     - name: Update ARM_ACCESS_KEY secret
-      run: |
-        
-        SECRET_VALUE=$(echo -n "${{ steps.terraform_outputs.outputs.primary_access_key }}" | base64)
-        echo $SECRET_VALUE
+      run: |        
+        SECRET_VALUE=$(echo -n "TEST331" | base64)
+        echo "The value of the secret is $SECRET_VALUE"
         curl \
             -X PUT \
             -H "Authorization: token ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}" \
@@ -82,3 +81,4 @@ jobs:
     #   with:
     #     name: terraform-outputs
     #     path: terraform-outputs.txt
+    # SECRET_VALUE=$(echo -n "${{ steps.terraform_outputs.outputs.primary_access_key }}" | base64)
