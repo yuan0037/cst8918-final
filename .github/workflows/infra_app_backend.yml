@@ -69,9 +69,8 @@ jobs:
         echo "::set-env name=ARM_ACCESS_KEY::$ARM_ACCESS_KEY"
         curl 
             -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Accept: application/vnd.github.v3+json" \            
+            -H "Authorization: token $ACCESS_TOKEN" \
             "https://api.github.com/repos/yuan0037/cst8918-final/actions/secrets/ARM_ACCESS_KEY" \
             -d "{\"encrypted_value\":\"$(echo -n $ARM_ACCESS_KEY)\"}"
             
