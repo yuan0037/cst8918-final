@@ -57,24 +57,33 @@ jobs:
     # - name: Set ACR Password Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
-    - name: Display key
-      run: |
-          echo ${{ steps.terraform_outputs.outputs.primary_access_key }}
-          SECRET_VALUE=$(echo -n '${{ steps.terraform_outputs.outputs.primary_access_key }}' | base64)
-          echo "The value of the access key is $SECRET_VALUE"
+    # - name: Display key
+    #   run: |
+    #       echo ${{ steps.terraform_outputs.outputs.primary_access_key }}
+    #       SECRET_VALUE=$(echo -n '${{ steps.terraform_outputs.outputs.primary_access_key }}' | base64)
+    #       echo "The value of the access key is $SECRET_VALUE"
 
-    - name: Export ARM_ACCESS_KEY
-      run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
+    # - name: Export ARM_ACCESS_KEY
+    #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
+    - name: Save Terraform Output to Env Var
+      run: echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
 
+      
+    # - name: Set output
+    #   id: vars
+    #   run: |
+    #     echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
+    
     - name: Set output
-      id: vars
-      run: |
-        echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
+      run: echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
+
+    # - name: Use VM_IP
+    #   run: echo "The VM IP is ${{ env.VM_IP }}"
     
     - name: Use output
       run: |
-        echo "Primary Access Key: ${{ steps.vars.outputs.primary_access_key }}"
+        echo "ARM_ACCESS_KEY = ${{ env.ARM_ACCESS_KEY }}"
     
 
     - name: Update ARM_ACCESS_KEY secret
