@@ -59,6 +59,15 @@ jobs:
     - id: terraform_outputs_1
       run:        
         terraform output -raw primary_access_key 
+
+    - id: terraform_outputs
+      run: |
+        echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
+
+    - name: Use Sensitive Output
+      run: |
+        echo "Sensitive Output is ${{ steps.terraform_outputs.outputs.primary_access_key }}"      
+      
         # echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
     # - name: Set ACR Username Secret
     #   run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
