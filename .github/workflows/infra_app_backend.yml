@@ -79,7 +79,7 @@ jobs:
 
     - name: Update ARM_ACCESS_KEY secret
       run: |        
-        SECRET_VALUE=$(echo -n "TEST331" | base64)
+        SECRET_VALUE=$(echo -n ${{ steps.vars.outputs.primary_access_key }} | base64)
         echo "The value of the secret is $SECRET_VALUE"
         curl \
             -X PUT \
