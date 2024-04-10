@@ -57,6 +57,9 @@ jobs:
     # - name: Set ACR Password Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
+    - name: Display key
+      run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}"
+      
     - name: Export ARM_ACCESS_KEY
       run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
