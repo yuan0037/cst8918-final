@@ -56,7 +56,7 @@ jobs:
       run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
 
     - id: terraform_outputs_1
-    run:         
+      run:         
         echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
     # - name: Set ACR Username Secret
     #   run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
