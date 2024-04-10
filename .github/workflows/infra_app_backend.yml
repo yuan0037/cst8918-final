@@ -78,7 +78,6 @@ jobs:
     #     echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
     
     - name: Set output
-      run: echo 
       run: echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
 
     # - name: Use VM_IP
