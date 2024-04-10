@@ -67,7 +67,8 @@ jobs:
     #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
     - name: Save Terraform Output to Env Var
-      run: echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
+      run: echo "$(terraform output -raw primary_access_key)"
+        # echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
 
       
     # - name: Set output
