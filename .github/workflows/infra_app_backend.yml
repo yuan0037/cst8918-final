@@ -68,10 +68,12 @@ jobs:
         
     - name: Save Terraform Output to Env Var
       run: |
-        echo "Primary Access Key is a${{ env.primary_access_key }}b"
+        
         echo "Username is a${{ env.acr_username }}b"
-        # echo "${{ steps.terraform_outputs.outputs.primary_access_key }}"
-        # echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
+        echo "Primary Access Key is a${{ env.primary_access_key }}b"
+        
+      # echo "${{ steps.terraform_outputs.outputs.primary_access_key }}"
+      # echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
 
       
     # - name: Set output
