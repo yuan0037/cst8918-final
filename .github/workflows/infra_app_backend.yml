@@ -58,7 +58,10 @@ jobs:
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
     - name: Display key
-      run: echo ${{ steps.terraform_outputs.outputs.primary_access_key }}
+      run: |
+          echo ${{ steps.terraform_outputs.outputs.primary_access_key }}
+          SECRET_VALUE=$(echo -n '${{ steps.terraform_outputs.outputs.primary_access_key }}' | base64)
+          echo "The value of the access key is $SECRET_VALUE"
 
     - name: Export ARM_ACCESS_KEY
       run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
