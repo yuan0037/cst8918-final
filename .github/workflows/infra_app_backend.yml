@@ -57,65 +57,23 @@ jobs:
     # - name: Set ACR Password Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
 
-    # - name: Export ARM_ACCESS_KEY
-    #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
+    - name: Export ARM_ACCESS_KEY
+      run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
         
 
-    - name: Set ARM_ACCESS_KEY value
-      run: echo "ARM_ACCESS_KEY=${{ steps.arm_access_key.outputs.primary_access_key }}" >> $GITHUB_ENV
-
-    # - name: Update ARM_ACCESS_KEY secret
-    #   run: |
-    #     echo "::set-env name=ARM_ACCESS_KEY::$ARM_ACCESS_KEY"
-    #     curl 
-    #         -X PUT \
-    #         -H "Accept: application/vnd.github.v3+json" \            
-    #         -H "Authorization: token $ACCESS_TOKEN" \
-    #         "https://api.github.com/repos/yuan0037/cst8918-final/actions/secrets/ARM_ACCESS_KEY" \
-    #         -d "{\"encrypted_value\":\"$(echo -n $ARM_ACCESS_KEY)\"}"
+    - name: Update ARM_ACCESS_KEY secret
+      run: |
+        
+        SECRET_VALUE=$(echo -n "$ARM_ACCESS_KEY" | base64)
             
-    
+        curl \
+            -X PUT \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/yuan0037/cst8918-final/actions/secrets/ARM_ACCESS_KEY \
+            -d '{"encrypted_value":"'"$SECRET_VALUE"'","key_id":"'"$KEY_ID"'"}'
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pynacl requests
-
-    - name: Encrypt secret
-      run: |
-        import requests
-        from nacl import encoding, public
-
-        def encrypt_secret(public_key, secret_value):
-            """Encrypt a Unicode string using the public key."""
-            public_key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
-            sealed_box = public.SealedBox(public_key)
-            encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
-            return encrypted
-
-        # Replace with the owner and repo
-        owner = "yuan0037"
-        repo = "cst8918-final"
-
-        # Get the public key
-        url = f"https://api.github.com/repos/{owner}/{repo}/actions/secrets/public-key"
-        headers = {
-            "Authorization": f"token ${{ secrets.GITHUB_TOKEN }}",
-            "Accept": "application/vnd.github.v3+json",
-        }
-        response = requests.get(url, headers=headers)
-        public_key = response.json()["key"]
-
-        # Encrypt the secret
-        secret_value = $ARM_ACCESS_KEY
-        encrypted_value = encrypt_secret(public_key, secret_value)
-
-        print(f"Encrypted value: {encrypted_value}")                    
+                     
     # - name: Upload Secrets
     #   uses: actions/upload-artifact@v2
     #   with:
