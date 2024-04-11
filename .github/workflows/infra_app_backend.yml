@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'infra/tf-backend/**'
 
 #Special permissions required for OIDC authentication
 permissions:
