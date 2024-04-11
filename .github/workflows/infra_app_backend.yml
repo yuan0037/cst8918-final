@@ -34,12 +34,13 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
-      id: extract_key
       run: |
-        terraform apply -auto-approve | tee terraform_output.txt
-        # Assuming your output variable is named "primary_access_key"
-        primary_access_key=$(terraform output -json primary_access_key)
-        echo "::set-output name=primary_access_key::$primary_access_key"
+        terraform apply -auto-approve 
+        
+    # | tee terraform_output.txt
+    # # Assuming your output variable is named "primary_access_key"
+    # primary_access_key=$(terraform output -json primary_access_key)
+    # echo "::set-output name=primary_access_key::$primary_access_key"
 
     # - name: Set Resource Group Name Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.resource_group_name }}" >> $GITHUB_ENV
@@ -69,10 +70,20 @@ jobs:
     # - id: terraform_outputs
     #   run: |
     #     echo "::set-output name=primary_access_key::$(terraform-bin output -raw primary_access_key)"
+    - name: install jq
+      id: install_jq
+      run: !
+        sudo apt-get update && sudo apt-get install jq -y
+
+    - name: Get Key
+      id: get_key
+      run: |
+        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
+        echo "::set-output name=primary_access_key::$primary_access_key"
 
     - name: Use Sensitive Output
       run: |
-        echo "Sensitive Output is ${{ steps.extract_key.outputs.primary_access_key }}"      
+        echo "Sensitive Output is ${{ steps.get_key.outputs.primary_access_key }}"      
       
       # echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
     # - name: Set ACR Username Secret
@@ -118,7 +129,7 @@ jobs:
 
     - name: Update ARM_ACCESS_KEY secret
       run: |        
-        SECRET_VALUE=$(echo -n ${{ steps.vars.outputs.primary_access_key }} | base64)
+        SECRET_VALUE=$(echo -n ${{ steps.get_key.outputs.primary_access_key }} | base64)
         echo "The value of the secret is $SECRET_VALUE"
         curl \
             -X PUT \
