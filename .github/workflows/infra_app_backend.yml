@@ -58,7 +58,7 @@ jobs:
     - name: Extract primary access key
       id: extract_key
       run: |
-        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate | tr -d '\n' | tr -d '\r')
+        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
         echo "::set-output name=primary_access_key::$primary_access_key"
             
     # - id: terraform_outputs_2
