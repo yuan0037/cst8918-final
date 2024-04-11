@@ -180,3 +180,36 @@ jobs:
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve ../../tfplan
+
+    - name: install jq
+      id: install_jq
+      run: |
+        sudo apt-get update && sudo apt-get install jq -y
+
+    - name: Get Key
+      id: get_key
+      run: |
+        acr_login_server=$(jq -r '.outputs.acr_login_server.value' terraform.tfstate)  
+        acr_username=$(jq -r '.outputs.acr_username.value' terraform.tfstate)
+        acr_password=$(jq -r '.outputs.acr_password.value' terraform.tfstate)        
+        echo "::set-output name=acr_login_server::$acr_login_server"
+        echo "::set-output name=acr_username::$acr_username"
+        echo "::set-output name=acr_password::$acr_password"
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+          name: ARM_ACR_LOGIN_SERVER
+          value: ${{steps.get_key.outputs.acr_login_server}}
+          pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: ARM_ACR_USERNAME
+        value: ${{steps.get_key.outputs.acr_username}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: ARM_ACR_PASSWORD
+        value: ${{steps.get_key.outputs.acr_password}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
