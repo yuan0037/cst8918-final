@@ -1,5 +1,5 @@
 resource "azurerm_redis_cache" "test_redis" {
-  name                = "test-redis-cache"
+  name                = "test-redis-yuan0037"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   capacity            = 0 # Basic tier
@@ -11,7 +11,7 @@ resource "azurerm_redis_cache" "test_redis" {
 }
 
 resource "azurerm_redis_cache" "prod_redis" {
-  name                = "prod-redis-cache"
+  name                = "prod-redis-yuan0037"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   capacity            = 1 # Standard tier
