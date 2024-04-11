@@ -72,7 +72,7 @@ jobs:
     #     echo "::set-output name=primary_access_key::$(terraform-bin output -raw primary_access_key)"
     - name: install jq
       id: install_jq
-      run: !
+      run: |
         sudo apt-get update && sudo apt-get install jq -y
 
     - name: Get Key
