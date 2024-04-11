@@ -52,23 +52,32 @@ jobs:
     # - name: Set ACR Login Server Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
 
-    - id: terraform_outputs_2
-      run: terraform output -raw acr_username
-      # run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install jq -y
 
-    - id: terraform_outputs_1
-      run:        
-        terraform output -raw primary_access_key 
-
-    - id: terraform_outputs
+    - name: Extract primary access key
+      id: extract_key
       run: |
-        echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
+        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
+        echo "::set-output name=primary_access_key::$primary_access_key"
+            
+    # - id: terraform_outputs_2
+    #   run: terraform output -raw acr_username
+    #   # run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
+
+    # - id: terraform_outputs_1
+    #   run:        
+    #     terraform-bin output -raw primary_access_key 
+
+    # - id: terraform_outputs
+    #   run: |
+    #     echo "::set-output name=primary_access_key::$(terraform-bin output -raw primary_access_key)"
 
     - name: Use Sensitive Output
       run: |
-        echo "Sensitive Output is ${{ steps.terraform_outputs.outputs.primary_access_key }}"      
+        echo "Sensitive Output is ${{ steps.extract_key.outputs.primary_access_key }}"      
       
-        # echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
+      # echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
     # - name: Set ACR Username Secret
     #   run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
 
@@ -105,9 +114,9 @@ jobs:
     # - name: Use VM_IP
     #   run: echo "The VM IP is ${{ env.VM_IP }}"
     
-    - name: Use output
-      run: |
-        echo "ARM_ACCESS_KEY = ${{ env.ARM_ACCESS_KEY }}"
+    # - name: Use output
+    #   run: |
+    #     echo "ARM_ACCESS_KEY = ${{ env.ARM_ACCESS_KEY }}"
     
 
     - name: Update ARM_ACCESS_KEY secret
