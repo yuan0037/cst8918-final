@@ -54,11 +54,11 @@ jobs:
 
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install jq -y
-
+  # primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
     - name: Extract primary access key
       id: extract_key
       run: |
-        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
+        primary_access_key=$(jq -r '.outputs.primary_access_key.value | sub("^/t"; "")' terraform.tfstate)
         echo $primary_access_key
         echo "::set-output name=primary_access_key::$primary_access_key"
     # - id: terraform_outputs_2
