@@ -1,6 +1,6 @@
 terraform {
   required_version = "~> 1.5"
-# defines the container and storage account used for the state file persistence. 
+  # defines the container and storage account used for the state file persistence. 
   backend "azurerm" {
     resource_group_name  = "8918-group6-final-be-rg"
     storage_account_name = "group6finalbestatesa"
