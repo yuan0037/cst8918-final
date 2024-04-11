@@ -11,6 +11,10 @@ resource "azurerm_kubernetes_cluster" "test_cluster" {
     vnet_subnet_id = azurerm_subnet.test_subnet.id
   }
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   kubernetes_version = "1.21.2"
 }
 
@@ -28,6 +32,10 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
     enable_auto_scaling = true
     min_count           = 1
     max_count           = 3
+  }
+
+  identity {
+    type = "SystemAssigned"
   }
 
   kubernetes_version = "1.21.2"
