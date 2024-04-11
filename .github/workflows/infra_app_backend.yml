@@ -132,7 +132,7 @@ jobs:
       with:
         name: ARM_ACCESS_KEY
         value: ${{steps.get_key.outputs.primary_access_key}}
-        pa_token: ${{secrets.KEY_ID}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
 
 
     # - name: Update ARM_ACCESS_KEY secret
