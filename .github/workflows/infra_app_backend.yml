@@ -34,7 +34,12 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      id: extract_key
+      run: |
+        terraform apply -auto-approve | tee terraform_output.txt
+        # Assuming your output variable is named "primary_access_key"
+        primary_access_key=$(terraform output -json primary_access_key)
+        echo "::set-output name=primary_access_key::$primary_access_key"
 
     # - name: Set Resource Group Name Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.resource_group_name }}" >> $GITHUB_ENV
@@ -52,16 +57,7 @@ jobs:
     # - name: Set ACR Login Server Secret
     #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
 
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install jq -y
-  # primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
-    - name: Extract primary access key
-      id: extract_key
-      run: |
-        primary_access_key=$(jq -r '.outputs.primary_access_key.value | sub("^/t"; "")' terraform.tfstate)
-        echo $primary_access_key
-        echo "::set-output name=primary_access_key::$primary_access_key"
-        echo "The secret is: ${$primary_access_key:0:20}***${$primary_access_key: -20}"
+
     # - id: terraform_outputs_2
     #   run: terraform output -raw acr_username
     #   # run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
