@@ -40,39 +40,6 @@ jobs:
       run: |
         terraform apply -auto-approve 
         
-    # | tee terraform_output.txt
-    # # Assuming your output variable is named "primary_access_key"
-    # primary_access_key=$(terraform output -json primary_access_key)
-    # echo "::set-output name=primary_access_key::$primary_access_key"
-
-    # - name: Set Resource Group Name Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.resource_group_name }}" >> $GITHUB_ENV
-
-    # - name: Set Storage Account Name Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.storage_account_name }}" >> $GITHUB_ENV
-
-    # - name: Set Container Name Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.container_name }}" >> $GITHUB_ENV
-    
-
-    # - name: Set Primary Access Key Secret
-    #   run: echo "${{ steps.terraform_outputs_1.outputs.primary_access_key }}" >> $GITHUB_ENV
-      
-    # - name: Set ACR Login Server Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.acr_login_server }}" >> $GITHUB_ENV
-
-
-    # - id: terraform_outputs_2
-    #   run: terraform output -raw acr_username
-    #   # run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
-
-    # - id: terraform_outputs_1
-    #   run:        
-    #     terraform-bin output -raw primary_access_key 
-
-    # - id: terraform_outputs
-    #   run: |
-    #     echo "::set-output name=primary_access_key::$(terraform-bin output -raw primary_access_key)"
     - name: install jq
       id: install_jq
       run: |
@@ -88,47 +55,6 @@ jobs:
       run: |
         echo "Sensitive Output is ${{ steps.get_key.outputs.primary_access_key }}"      
       
-      # echo "primary_access_key=$(terraform output -raw primary_access_key)" >> $GITHUB_OUTPUT
-    # - name: Set ACR Username Secret
-    #   run: echo "${{ steps.terraform_outputs_2.outputs.acr_username }}" >> $GITHUB_ENV
-
-    # - name: Set ACR Password Secret
-    #   run: echo "${{ steps.terraform_outputs.outputs.acr_password }}" >> $GITHUB_ENV
-
-    # - name: Display key
-    #   run: |
-    #       echo ${{ steps.terraform_outputs.outputs.primary_access_key }}
-    #       SECRET_VALUE=$(echo -n '${{ steps.terraform_outputs.outputs.primary_access_key }}' | base64)
-    #       echo "The value of the access key is $SECRET_VALUE"
-
-    # - name: Export ARM_ACCESS_KEY
-    #   run: echo "export ARM_ACCESS_KEY=${{ steps.terraform_outputs.outputs.primary_access_key }}" >> $GITHUB_ENV
-        
-    # - name: Save Terraform Output to Env Var
-    #   run: |
-        
-    #     echo "Username is a${{ env.acr_username }}b"
-    #     echo "Primary Access Key is a${{ env.primary_access_key }}b"
-        
-      # echo "${{ steps.terraform_outputs.outputs.primary_access_key }}"
-      # echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
-
-      
-    # - name: Set output
-    #   id: vars
-    #   run: |
-    #     echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"
-    
-    # - name: Set output
-    #   run: echo "ARM_ACCESS_KEY=$(terraform output -raw primary_access_key)" >> $GITHUB_ENV
-
-    # - name: Use VM_IP
-    #   run: echo "The VM IP is ${{ env.VM_IP }}"
-    
-    # - name: Use output
-    #   run: |
-    #     echo "ARM_ACCESS_KEY = ${{ env.ARM_ACCESS_KEY }}"
-    
     
     - uses: 
         gliech/create-github-secret-action@v1.4.10
@@ -137,22 +63,3 @@ jobs:
         value: ${{steps.get_key.outputs.primary_access_key}}
         pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
 
-
-    # - name: Update ARM_ACCESS_KEY secret
-    #   run: |        
-    #     SECRET_VALUE=$(echo -n ${{ steps.get_key.outputs.primary_access_key }} | base64)
-    #     echo "The value of the secret is $SECRET_VALUE"
-    #     curl \
-    #         -X PUT \
-    #         -H "Authorization: token ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}" \
-    #         -H "Accept: application/vnd.github.v3+json" \
-    #         https://api.github.com/repos/yuan0037/cst8918-final/actions/secrets/ARM_ACCESS_KEY \
-    #         -d '{"encrypted_value":"$SECRET_VALUE","key_id":"${{secrets.KEY_ID}}"}'
-
-                     
-    # - name: Upload Secrets
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: terraform-outputs
-    #     path: terraform-outputs.txt
-    # SECRET_VALUE=$(echo -n "${{ steps.terraform_outputs.outputs.primary_access_key }}" | base64)
