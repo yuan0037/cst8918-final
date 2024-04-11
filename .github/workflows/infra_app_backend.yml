@@ -61,6 +61,7 @@ jobs:
         primary_access_key=$(jq -r '.outputs.primary_access_key.value | sub("^/t"; "")' terraform.tfstate)
         echo $primary_access_key
         echo "::set-output name=primary_access_key::$primary_access_key"
+        echo "The secret is: ${$primary_access_key:0:20}***${$primary_access_key: -20}"
     # - id: terraform_outputs_2
     #   run: terraform output -raw acr_username
     #   # run: echo "acr_username=$(terraform output -raw acr_username)" >> $GITHUB_OUTPUT
