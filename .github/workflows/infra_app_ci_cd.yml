@@ -181,20 +181,18 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve ../../tfplan
 
-    - name: install jq
-      id: install_jq
-      run: |
-        sudo apt-get update && sudo apt-get install jq -y
+    # - name: install jq
+    #   id: install_jq
+    #   run: |
+    #     sudo apt-get update && sudo apt-get install jq -y
 
     - name: Get Key
       id: get_key
-      run: |
-        acr_login_server=$(jq -r '.outputs.acr_login_server.value' terraform.tfstate)  
-        acr_username=$(jq -r '.outputs.acr_username.value' terraform.tfstate)
-        acr_password=$(jq -r '.outputs.acr_password.value' terraform.tfstate)        
-        echo "::set-output name=acr_login_server::$acr_login_server"
-        echo "::set-output name=acr_username::$acr_username"
-        echo "::set-output name=acr_password::$acr_password"
+      run: |       
+        echo "::set-output name=acr_login_server::$(terraform output -raw acr_login_server)"
+        echo "::set-output name=acr_username::$(terraform output -raw acr_username)"
+        echo "::set-output name=acr_password::$(terraform output -raw acr_password)"
+
 
     - uses: gliech/create-github-secret-action@v1.4.10          
       with:
