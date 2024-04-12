@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-redix-group06-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weather-redix-group06
+  template:
+    metadata:
+      labels:
+        app: weather-redix-group06
+    spec:
+      containers:
+      - name: weather-redix-group06
+        image: weather-redix-group06:latest
+        env:
+        - name: WEATHER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: weather-api-key
+              key: WEATHER_API_KEY
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: redis-host
+              key: REDIS_HOST
+        - name: REDIS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: redis-key
+              key: REDIS_KEY
+        resources:
+          limits:
+            cpu: "1"
+            memory: "500Mi"
+          requests:
+            cpu: "0.5"
+            memory: "200Mi"

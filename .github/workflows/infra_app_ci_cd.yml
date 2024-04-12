@@ -1,4 +1,4 @@
-name: Terraform CI-CD
+name: App Infrastructure CI-CD
 on:
   push:
     branches: [ main ]
@@ -177,7 +177,7 @@ jobs:
         name: tfplan
     - name: Print Current Execution Folder
       run: pwd
-      
+
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve ../../tfplan
@@ -188,7 +188,8 @@ jobs:
         echo "::set-output name=acr_login_server::$(terraform output -raw acr_login_server)"
         echo "::set-output name=acr_username::$(terraform output -raw acr_username)"
         echo "::set-output name=acr_password::$(terraform output -raw acr_password)"
-
+        echo "::set-output name=kube_config_test::$(terraform output -raw kube_config_test)"
+        echo "::set-output name=kube_config_prod::$(terraform output -raw kube_config_prod)"
 
     - uses: gliech/create-github-secret-action@v1.4.10          
       with:
@@ -206,4 +207,16 @@ jobs:
       with:
         name: ARM_ACR_PASSWORD
         value: ${{steps.get_key.outputs.acr_password}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: ARM_KUBE_CONFIG_TEST
+        value: ${{steps.get_key.outputs.kube_config_test}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: ARM_KUBE_CONFIG_PROD
+        value: ${{steps.get_key.outputs.kube_config_prod}}
         pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}

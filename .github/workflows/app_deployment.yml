@@ -1,0 +1,40 @@
+name: CD for TEST
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to ACR
+      run: |
+        docker login ${{ secrets.ARM_ACR_LOGIN_SERVER }} -u ${{ secrets.ARM_ACR_USERNAME }} -p ${{ secrets.ARM_ACR_PASSWORD }}
+
+    - name: Pull Docker image
+      run: |
+        docker pull ${{ secrets.ARM_ACR_LOGIN_SERVER }}/weather-redix-group06:latest
+
+    - name: Install Azure CLI
+      run: |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+    - name: Install kubectl
+      run: |
+        sudo az aks install-cli
+
+    - name: Set Credentials of AKS Cluster
+      run: |
+        kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
+        kubectl create secret generic redis-host --from-literal=REDIS_HOST=${{ secrets.REDIS_HOST }}
+        kubectl create secret generic redis-key --from-literal=REDIS_KEY=${{ secrets.REDIS_KEY }}
+
+
+    - name: Deploy to AKS
+      run: |
+        echo "${{ secrets.ARM_KUBE_CONFIG_PROD }}" > kubeconfig.yaml
+        export KUBECONFIG=kubeconfig.yaml
+        kubectl apply -f deployment.yaml
