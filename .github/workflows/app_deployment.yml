@@ -1,4 +1,4 @@
-name: CD for TEST
+name: CD for Test And Prod
 on:
   pull_request:
     branches: [ main ]
