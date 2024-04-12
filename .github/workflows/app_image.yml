@@ -1,4 +1,4 @@
-name: Docker Build
+name: Image Rebuild and Upload
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'app/**'
+  pull_request:
+    branches: [ main ]
 defaults:
     run:
         working-directory: app
