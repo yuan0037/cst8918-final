@@ -1,11 +1,6 @@
-name: Image Rebuild and Upload
+name: Image Rebuild and Upload on PR to Main
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'app/**'
   pull_request:
     branches: [ main ]
 defaults:
