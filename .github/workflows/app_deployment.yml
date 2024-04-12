@@ -10,6 +10,9 @@ on:
     paths:
         - 'app/**'
 
+defaults:
+    run:
+        working-directory: app
 jobs:
   build-image:
     if: github.ref != 'refs/heads/main'
