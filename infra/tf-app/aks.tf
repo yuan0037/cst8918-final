@@ -1,5 +1,5 @@
 resource "azurerm_kubernetes_cluster" "test_cluster" {
-  name                = "test-cluster"
+  name                = "8918-test-cluster-group06"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "test-cluster"
@@ -19,7 +19,7 @@ resource "azurerm_kubernetes_cluster" "test_cluster" {
 }
 
 resource "azurerm_kubernetes_cluster" "prod_cluster" {
-  name                = "prod-cluster"
+  name                = "8918-prod-cluster-group06"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "prod-cluster"
