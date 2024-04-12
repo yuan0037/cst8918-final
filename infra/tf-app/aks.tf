@@ -6,8 +6,8 @@ resource "azurerm_kubernetes_cluster" "test_cluster" {
 
   network_profile {
     network_plugin = "azure"
-    service_cidr   = "10.6.0.0/24"  // Specify the Service CIDR range
-    dns_service_ip = "10.6.0.10"     // IP address within the service_cidr range
+    service_cidr   = "10.6.0.0/24" // Specify the Service CIDR range
+    dns_service_ip = "10.6.0.10"   // IP address within the service_cidr range
   }
 
   default_node_pool {
@@ -32,8 +32,8 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
 
   network_profile {
     network_plugin = "azure"
-    service_cidr   = "10.5.0.0/24"  // Specify the Service CIDR range
-    dns_service_ip = "10.5.0.10"     // IP address within the service_cidr range
+    service_cidr   = "10.5.0.0/24" // Specify the Service CIDR range
+    dns_service_ip = "10.5.0.10"   // IP address within the service_cidr range
   }
 
   default_node_pool {
