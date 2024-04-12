@@ -190,7 +190,12 @@ jobs:
         echo "::set-output name=acr_password::$(terraform output -raw acr_password)"
         echo "::set-output name=kube_config_test::$(terraform output -raw kube_config_test)"
         echo "::set-output name=kube_config_prod::$(terraform output -raw kube_config_prod)"
+        echo "::set-output name=prod_redis_host::$(terraform output -raw prod_redis_host)"
+        echo "::set-output name=prod_redis_primary_access_key::$(terraform output -raw prod_redis_primary_access_key)"
+        echo "::set-output name=test_redis_host::$(terraform output -raw test_redis_host)"
+        echo "::set-output name=test_redis_primary_access_key::$(terraform output -raw test_redis_primary_access_key)"
 
+        
     - uses: gliech/create-github-secret-action@v1.4.10          
       with:
           name: ARM_ACR_LOGIN_SERVER
@@ -219,4 +224,28 @@ jobs:
       with:
         name: ARM_KUBE_CONFIG_PROD
         value: ${{steps.get_key.outputs.kube_config_prod}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: PROD_REDIS_HOST
+        value: ${{steps.get_key.outputs.prod_redis_host}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: PROD_REDIS_ACCESS_KEY
+        value: ${{steps.get_key.outputs.prod_redis_primary_access_key}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: TEST_REDIS_HOST
+        value: ${{steps.get_key.outputs.test_redis_host}}
+        pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+
+    - uses: gliech/create-github-secret-action@v1.4.10          
+      with:
+        name: TEST_REDIS_ACCESS_KEY
+        value: ${{steps.get_key.outputs.test_redis_primary_access_key}}
         pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
