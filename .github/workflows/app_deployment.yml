@@ -19,8 +19,7 @@ jobs:
   deploy-test:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
-    name: 'Deploy to TEST'
-    needs: [pull-image]        
+    name: 'Deploy to TEST'      
     steps:
         - name: Checkout code
           uses: actions/checkout@v2
@@ -54,16 +53,15 @@ jobs:
             kubectl apply -f app/k8s_deployment.yaml
 
         - name: Deploy to AKS
-        run: |
-          echo "${{ secrets.ARM_KUBE_CONFIG_TEST }}" > kubeconfig.yaml
-          export KUBECONFIG=kubeconfig.yaml
-          kubectl apply -f app/k8s_deployment.yaml
+          run: |
+            echo "${{ secrets.ARM_KUBE_CONFIG_TEST }}" > kubeconfig.yaml
+            export KUBECONFIG=kubeconfig.yaml
+            kubectl apply -f app/k8s_deployment.yaml
           
   deploy-prod:    
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: 'Deploy to PROD'
-    needs: [pull-image]        
     steps:
         - name: Checkout code
           uses: actions/checkout@v2
@@ -97,8 +95,8 @@ jobs:
             kubectl apply -f app/k8s_deployment.yaml
 
         - name: Deploy to AKS
-        run: |
-          echo "${{ secrets.ARM_KUBE_CONFIG_PROD }}" > kubeconfig.yaml
-          export KUBECONFIG=kubeconfig.yaml
-          kubectl apply -f app/k8s_deployment.yaml
+          run: |
+            echo "${{ secrets.ARM_KUBE_CONFIG_PROD }}" > kubeconfig.yaml
+            export KUBECONFIG=kubeconfig.yaml
+            kubectl apply -f app/k8s_deployment.yaml
       
