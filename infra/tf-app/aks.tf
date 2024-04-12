@@ -2,7 +2,7 @@ resource "azurerm_kubernetes_cluster" "test_cluster" {
   name                = "8918-test-cluster-group06"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "test-cluster"
+  dns_prefix          = "8919-group6-test-cluster"
 
   default_node_pool {
     name           = "default"
@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
   name                = "8918-prod-cluster-group06"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "prod-cluster"
+  dns_prefix          = "8919-group6-prod-cluster"
 
   default_node_pool {
     name                = "default"
