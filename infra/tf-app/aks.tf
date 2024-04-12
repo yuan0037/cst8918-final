@@ -21,7 +21,7 @@ resource "azurerm_kubernetes_cluster" "test_cluster" {
     type = "SystemAssigned"
   }
 
-  kubernetes_version = "1.21.2"
+  kubernetes_version = "1.21"
 }
 
 resource "azurerm_kubernetes_cluster" "prod_cluster" {
@@ -50,5 +50,5 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
     type = "SystemAssigned"
   }
 
-  kubernetes_version = "1.21.2"
+  kubernetes_version = "1.21"
 }
