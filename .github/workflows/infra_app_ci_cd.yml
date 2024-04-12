@@ -177,14 +177,10 @@ jobs:
         name: tfplan
     - name: Print Current Execution Folder
       run: pwd
+      
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve ../../tfplan
-
-    # - name: install jq
-    #   id: install_jq
-    #   run: |
-    #     sudo apt-get update && sudo apt-get install jq -y
 
     - name: Get Key
       id: get_key
