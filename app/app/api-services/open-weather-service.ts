@@ -19,7 +19,7 @@ export async function fetchWeatherData({
   const queryString = `lat=${lat}&lon=${lon}&units=${units}`
 
   const cacheEntry = await redis.get(queryString)
-  
+
   if (cacheEntry) return JSON.parse(cacheEntry)
 
   const response = await fetch(`${BASE_URL}?${queryString}&appid=${API_KEY}`)
@@ -27,6 +27,7 @@ export async function fetchWeatherData({
 
   await redis.set(queryString, data, {PX: TEN_MINUTES}) // The PX option sets the expiry time
   return JSON.parse(data)
+  
 }
 
 export async function getGeoCoordsForPostalCode(
