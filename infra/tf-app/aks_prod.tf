@@ -27,21 +27,3 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
 
   kubernetes_version = "1.26.10"
 }
-
-resource "kubernetes_secret" "prod_secret" {
-  provider = kubernetes.prod
-  metadata {
-    name = "my-secret-aks-prod"
-  }
-  data = {
-    "REDIS_HOST" = azurerm_redis_cache.prod_cluster.host
-    "REDIS_KEY"  = azurerm_redis_cache.prod_cluster.primary_access_key
-  }
-
-  depends_on = [azurerm_kubernetes_cluster.prod_cluster, azurerm_redis_cache.prod_redis]
-}
-
-provider "kubernetes" {
-  config_context_cluster = azurerm_kubernetes_cluster.prod_secret.kube_config[0].name
-  alias                  = "prod"
-}
