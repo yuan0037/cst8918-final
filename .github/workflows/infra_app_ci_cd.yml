@@ -1,4 +1,6 @@
 name: App Infrastructure
+# Only merged PR on main branch with files changed under infra/tf-app folder
+# will invoke terraform apply
 on:
   push:
     branches: [ main ]
