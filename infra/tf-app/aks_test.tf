@@ -1,8 +1,3 @@
-provider "kubernetes" {
-  config_context_cluster = azurerm_kubernetes_cluster.test_cluster.kube_config[0].name
-  alias                  = "test"
-}
-
 resource "azurerm_kubernetes_cluster" "test_cluster" {
   name                = "8918-test-cluster-group06"
   location            = azurerm_resource_group.rg.location
@@ -41,5 +36,10 @@ resource "kubernetes_secret" "test_secret" {
     "REDIS_KEY"  = azurerm_redis_cache.test_cluster.primary_access_key
   }
   depends_on = [azurerm_kubernetes_cluster.test_cluster, azurerm_redis_cache.test_redis]
+}
+
+provider "kubernetes" {
+  config_context_cluster = azurerm_kubernetes_cluster.test_cluster.kube_config[0].name
+  alias                  = "test"
 }
 

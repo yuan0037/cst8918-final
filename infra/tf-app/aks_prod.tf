@@ -1,8 +1,3 @@
-provider "kubernetes" {
-  config_context_cluster = azurerm_kubernetes_cluster.prod_secret.kube_config[0].name
-  alias                  = "prod"
-}
-
 resource "azurerm_kubernetes_cluster" "prod_cluster" {
   name                = "8918-prod-cluster-group06"
   location            = azurerm_resource_group.rg.location
@@ -44,4 +39,9 @@ resource "kubernetes_secret" "prod_secret" {
   }
 
   depends_on = [azurerm_kubernetes_cluster.prod_cluster, azurerm_redis_cache.prod_redis]
+}
+
+provider "kubernetes" {
+  config_context_cluster = azurerm_kubernetes_cluster.prod_secret.kube_config[0].name
+  alias                  = "prod"
 }
