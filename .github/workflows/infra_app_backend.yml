@@ -40,20 +40,12 @@ jobs:
       run: |
         terraform apply -auto-approve 
         
-    - name: install jq
-      id: install_jq
-      run: |
-        sudo apt-get update && sudo apt-get install jq -y
+  # Refactored credential value retrieving using TerraForm output instead of getting from tfstate. 
 
     - name: Get Key
       id: get_key
       run: |
-        primary_access_key=$(jq -r '.outputs.primary_access_key.value' terraform.tfstate)
-        echo "::set-output name=primary_access_key::$primary_access_key"
-
-    - name: Use Sensitive Output
-      run: |
-        echo "Sensitive Output is ${{ steps.get_key.outputs.primary_access_key }}"      
+        echo "::set-output name=primary_access_key::$(terraform output -raw primary_access_key)"    
       
     
     - uses: 
