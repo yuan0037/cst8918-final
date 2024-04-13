@@ -15,6 +15,7 @@ export async function fetchWeatherData({
   lon,
   units
 }: FetchWeatherDataParams) {
+  
   const queryString = `lat=${lat}&lon=${lon}&units=${units}`
 
   const cacheEntry = await redis.get(queryString)
