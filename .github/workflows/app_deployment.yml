@@ -89,15 +89,27 @@ jobs:
             client-id: ${{ secrets.AZURE_CLIENT_ID }}
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          
-        - name: Configure kubectl
-          env:
-            KUBECONFIG: ${{ secrets.ARM_KUBE_CONFIG_TEST }}
-          run: |
-              echo "$KUBECONFIG" > ./azurek8s
-              cat ./azurek8s
-              export KUBECONFIG=./azurek8s
-              kubectl apply -f app/k8s_deployment.yaml
+
+
+        # Use kubelogin to configure your kubeconfig for Azure auth
+        - name: Set up kubelogin for non-interactive login
+          uses: azure/use-kubelogin@v1
+          with:
+            kubelogin-version: 'v0.0.25'
+
+        # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+        - name: Get K8s context
+          uses: azure/aks-set-context@v3
+          with:
+            resource-group: 'cst8918-final-project-group-fp6'
+            cluster-name: '8918-test-cluster-group06'
+            admin: 'false'
+            use-kubelogin: 'true'
+
+
+        - name: Deploy kubectl
+          run: |            
+            kubectl apply -f app/k8s_deployment.yaml
 
       # az aks get-credentials --resource-group cst8918-final-project-group-fp6 --name 8918-test-cluster-group06 --overwrite-existing
       # kubectl get nodes
