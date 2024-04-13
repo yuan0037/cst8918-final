@@ -94,10 +94,10 @@ jobs:
           env:
             KUBECONFIG: ${{ secrets.ARM_KUBE_CONFIG_TEST }}
           run: |
-              mkdir -p ~/.kube
-              echo "$KUBECONFIG" > ~/.kube/config
-    
-      
+              az aks get-credentials --resource-group cst8918-final-project-group-fp6 --name 8918-test-cluster-group06 --overwrite-existing
+
+      # mkdir -p ~/.kube
+      # echo "$KUBECONFIG" > ~/.kube/config     
         - name: Verify Kubernetes Connection
           run: kubectl get nodes # or any other kubectl command you want to run
 
