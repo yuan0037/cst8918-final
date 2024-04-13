@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  config_context_cluster = azurerm_kubernetes_cluster.test_cluster.kube_config.0.name
+  config_context_cluster = azurerm_kubernetes_cluster.test_cluster.kube_config[0].name
   alias                  = "test"
 }
 
