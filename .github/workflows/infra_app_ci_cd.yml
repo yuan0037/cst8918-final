@@ -1,4 +1,4 @@
-name: App Infrastructure CI-CD
+name: App Infrastructure
 on:
   push:
     branches: [ main ]
