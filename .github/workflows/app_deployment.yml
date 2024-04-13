@@ -15,6 +15,20 @@ on:
 defaults:
     run:
         working-directory: app
+
+#Special permissions required for OIDC authentication
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  ARM_ACCESS_KEY: "${{ secrets.ARM_ACCESS_KEY }}"
+
 jobs:
 
   build-image:
@@ -68,6 +82,19 @@ jobs:
           run: |
             sudo az aks install-cli
     
+            - name: Retrieve Kubernetes Config from Secret
+            env:
+              KUBE_CONFIG: ${{ secrets.ARM_KUBE_CONFIG_TEST }}
+            run: echo "$KUBE_CONFIG" > kubeconfig.yaml
+      
+        - name: Set Kubernetes Context
+          run: |
+              mkdir -p ~/.kube
+              cp kubeconfig.yaml ~/.kube/config
+      
+        - name: Verify Kubernetes Connection
+          run: kubectl get nodes # or any other kubectl command you want to run
+
         - name: Set Credentials of AKS Cluster
           run: |
             kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
@@ -108,6 +135,15 @@ jobs:
           run: |
             sudo az aks install-cli
     
+      
+        - name: Set Kubernetes Context
+          run: |
+                mkdir -p ~/.kube
+                cp kubeconfig.yaml ~/.kube/config
+        
+        - name: Verify Kubernetes Connection
+          run: kubectl get nodes # or any other kubectl command you want to run
+
         - name: Set Credentials of AKS Cluster
           run: |
             kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}
