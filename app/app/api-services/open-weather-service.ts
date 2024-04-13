@@ -4,6 +4,7 @@ const API_KEY = process.env.WEATHER_API_KEY
 const TEN_MINUTES = 1000 * 60 * 10 // in milliseconds
 const BASE_URL = 'https://api.openweathermap.org/data/3.0/onecall'
 
+
 interface FetchWeatherDataParams {
   lat: number
   lon: number
