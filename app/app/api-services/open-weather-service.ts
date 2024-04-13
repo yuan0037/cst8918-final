@@ -10,7 +10,6 @@ interface FetchWeatherDataParams {
   units: string
 }
 
-
 export async function fetchWeatherData({
   lat,
   lon,
