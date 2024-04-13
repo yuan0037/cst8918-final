@@ -52,3 +52,27 @@ resource "azurerm_kubernetes_cluster" "prod_cluster" {
 
   kubernetes_version = "1.26.10"
 }
+
+resource "azurerm_kubernetes_secret" "test_secret" {
+  name      = "my-secret"
+  namespace = "default"
+  data = {
+    "REDIS_HOST" = azurerm_redis_cache.test_cluster.host
+    "REDIS_KEY"  = azurerm_redis_cache.test_cluster.primary_access_key
+  }
+
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.test_cluster.id
+  depends_on            = [azurerm_kubernetes_cluster.test_cluster, azurerm_redis_cache.test_redis]
+}
+
+resource "azurerm_kubernetes_secret" "prod_secret" {
+  name      = "my-secret"
+  namespace = "default"
+  data = {
+    "REDIS_HOST" = azurerm_redis_cache.prod_cluster.host
+    "REDIS_KEY"  = azurerm_redis_cache.prod_cluster.primary_access_key
+  }
+
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.prod_cluster.id
+  depends_on            = [azurerm_kubernetes_cluster.prod_cluster, azurerm_redis_cache.prod_redis]
+}
