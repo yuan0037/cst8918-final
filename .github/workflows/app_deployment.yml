@@ -3,15 +3,14 @@ name: CD for Test And Prod
 # merged PR on main will invoke redployment to ask production environment
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-        - 'app/**'
-    
-  push:
-    branches: [ main ]
-    paths:
-        - 'app/**'
+      - "app/**"
 
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
 
 #Special permissions required for OIDC authentication
 permissions:
@@ -19,7 +18,7 @@ permissions:
   contents: read
   pull-requests: write
 
-#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate.
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
@@ -27,7 +26,6 @@ env:
   ARM_ACCESS_KEY: "${{ secrets.ARM_ACCESS_KEY }}"
 
 jobs:
-
   build-image:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -37,7 +35,7 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t weather-redix-group06:${{ github.sha }} ./app
-      
+
       - name: Login to Azure Container Registry
         run: |
           echo ${{ secrets.ARM_ACR_PASSWORD }} | docker login ${{ secrets.ARM_ACR_LOGIN_SERVER }} -u ${{ secrets.ARM_ACR_USERNAME }} --password-stdin
@@ -48,56 +46,17 @@ jobs:
       - name: Push Docker image to ACR
         run: docker push ${{ secrets.ARM_ACR_LOGIN_SERVER }}/weather-redix-group06:${{ github.sha }}
 
-      - uses: gliech/create-github-secret-action@v1.4.10          
+      - uses: gliech/create-github-secret-action@v1.4.10
         with:
-            name: LATEST_TAG
-            value: ${{ github.sha }}
-            pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
+          name: LATEST_TAG
+          value: ${{ github.sha }}
+          pa_token: ${{secrets.USER_ACTION_TOKEN_WORKFLOW}}
 
   deploy-test:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: [build-image]
-    name: 'Deploy to TEST'      
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-  
-        - name: Pull Image
-          run: |
-            echo ${{ secrets.ARM_ACR_PASSWORD }} | docker login ${{ secrets.ARM_ACR_LOGIN_SERVER }} -u ${{ secrets.ARM_ACR_USERNAME }} --password-stdin            
-            docker pull ${{ secrets.ARM_ACR_LOGIN_SERVER }}/weather-redix-group06:${{ secrets.LATEST_TAG }}
-    
-        - name: Azure login
-          uses: azure/login@v2
-          with:
-            client-id: ${{ secrets.AZURE_CLIENT_ID }}
-            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-        # Use kubelogin to configure your kubeconfig for Azure auth
-        - name: Set up kubelogin for non-interactive login
-          uses: azure/use-kubelogin@v1
-          with:
-            kubelogin-version: 'v0.0.25'
-
-        # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
-        - name: Get K8s context
-          uses: azure/aks-set-context@v3
-          with:
-            resource-group: 'cst8918-final-project-group-fp6'
-            cluster-name: '8918-test-cluster-group06'
-            admin: 'false'
-            use-kubelogin: 'true'
-
-        - name: Deploy kubectl
-          run: |            
-            kubectl apply -f app/k8s_deployment.yaml
-
-  deploy-prod:    
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    name: 'Deploy to PROD'
+    name: "Deploy to TEST"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -118,18 +77,66 @@ jobs:
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
         with:
-          kubelogin-version: 'v0.0.25'
+          kubelogin-version: "v0.0.25"
 
       # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
       - name: Get K8s context
         uses: azure/aks-set-context@v3
         with:
-          resource-group: 'cst8918-final-project-group-fp6'
-          cluster-name: '8918-prod-cluster-group06'
-          admin: 'false'
-          use-kubelogin: 'true'
+          resource-group: "cst8918-final-project-group-fp6"
+          cluster-name: "8918-test-cluster-group06"
+          admin: "false"
+          use-kubelogin: "true"
+
+      # Add this step to create the Kubernetes secret
+      - name: Set Kubernetes secret for WEATHER_API_KEY
+        run: |
+          kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}" --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy kubectl
-        run: |            
+        run: |
           kubectl apply -f app/k8s_deployment.yaml
-      
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: "Deploy to PROD"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Pull Image
+        run: |
+          echo ${{ secrets.ARM_ACR_PASSWORD }} | docker login ${{ secrets.ARM_ACR_LOGIN_SERVER }} -u ${{ secrets.ARM_ACR_USERNAME }} --password-stdin            
+          docker pull ${{ secrets.ARM_ACR_LOGIN_SERVER }}/weather-redix-group06:${{ secrets.LATEST_TAG }}
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Use kubelogin to configure your kubeconfig for Azure auth
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: "v0.0.25"
+
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: "cst8918-final-project-group-fp6"
+          cluster-name: "8918-prod-cluster-group06"
+          admin: "false"
+          use-kubelogin: "true"
+
+      # Add this step to create the Kubernetes secret
+      - name: Set Kubernetes secret for WEATHER_API_KEY
+        run: |
+          kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}" --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy kubectl
+        run: |
+          kubectl apply -f app/k8s_deployment.yaml
