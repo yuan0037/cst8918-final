@@ -129,6 +129,12 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
+      # Add this step to create the Kubernetes secret
+      - name: Set Kubernetes secret for WEATHER_API_KEY
+        run: |
+          kubectl create secret generic weather-api-key --from-literal=WEATHER_API_KEY="${{ secrets.WEATHER_API_KEY }}" --dry-run=client -o yaml | kubectl apply -f -
+ 
+
       - name: Deploy kubectl
         run: |            
           kubectl apply -f app/k8s_deployment.yaml
